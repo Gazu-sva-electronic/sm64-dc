@@ -111,7 +111,14 @@ void print_intro_text(void) {
 #ifdef VERSION_EU
     int language = eu_get_language();
 #endif
-    if ((gGlobalTimer & 0x1F) < 20) {
+   **
+* THE FIX FOR LEVELS:
+* We remove 'temp_pad' and use 'gControllerPads' directly.
+* We force the reading so that the Dreamcast's Maple bus doesn't go to sleep.
+*/
+    if (controller_dc.read) {
+        controller_dc.read(&gControllerPads[0]); 
+    }
         if (gControllerBits == 0) {
 #ifdef VERSION_EU
             print_text_centered(SCREEN_WIDTH / 2, 20, gNoControllerMsg[language]);
@@ -119,6 +126,8 @@ void print_intro_text(void) {
             print_text_centered(SCREEN_WIDTH / 2, 20, "NO CONTROLLER");
 #endif
         } else {
+              // If there is a remote control, we display "PRESS START"
+              if ((gGlobalTimer & 0x1F) < 20) {
 #ifdef VERSION_EU
             print_text(20, 20, "START");
 #else
