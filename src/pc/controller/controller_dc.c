@@ -140,7 +140,7 @@ static void controller_dc_read(OSContPad *pad) {
 }
 
 /* API STRUCTURE */
-struct ControllerAPI controller_dc = {
-    controller_dc_init,
-    controller_dc_read
-}; 
+struct ControllerAPI controller_dc = { controller_dc_init, controller_dc_read }; 
+    
+   
+
