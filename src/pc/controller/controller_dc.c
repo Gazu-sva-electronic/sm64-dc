@@ -3,6 +3,8 @@
 //#include <ultra64.h>
 /* Dreamcast and Nintendo share these defines... the odds... Copy it here */
 /* Buttons */
+/* Do NOT define the variable here, just tell the compiler that it exists elsewhere */
+extern u8 gControllerBits;
 
 #define N64_CONT_A 0x8000
 #define N64_CONT_B 0x4000
@@ -71,13 +73,21 @@ static void controller_dc_init(void) {
 
 #include <stdlib.h>
 static void controller_dc_read(OSContPad *pad) {
-    maple_device_t *cont;
-    cont_state_t *state;
+     // 1. Initial cleaning
+    pad->button = 0;
+    pad->stick_x = 0;
+    pad->stick_y = 0;
 
-    cont = maple_enum_type(0, MAPLE_FUNC_CONTROLLER);
-    if (!cont)
-        return;
-    state = (cont_state_t *) maple_dev_status(cont);
+    // 2. Attempt at active reading
+    maple_device_t *cont = maple_enum_dev(0, 0); // Puerto A
+    if (!cont) cont = maple_enum_type(0, MAPLE_FUNC_CONTROLLER);
+
+    if (cont != NULL) {
+        cont_state_t *state = (cont_state_t *)maple_dev_status(cont);
+        if (state != NULL) {
+          // CONTROLLER DETECTED: We restored everything
+            gControllerBits = 1;
+            pad->errnum = 0;
 #if FOR_DCLOAD
     if(state->ltrig  && state->rtrig && (state->buttons & CONT_START)) {
         exit(0);
@@ -111,6 +121,20 @@ static void controller_dc_read(OSContPad *pad) {
         pad->button |= L_CBUTTONS;
     if (state->buttons & CONT_DPAD_RIGHT)
         pad->button |= R_CBUTTONS;
+return; // Successful exit
+         }
+    }
+    // 3. --- RECONNECTION LOGIC FOR THE MAIN LOOP ---
+    // If we get here, the controller is disconnected.
+    
+    // We set gControllerBits to 0 so the motor knows there is no controller
+    gControllerBits = 0;
+    // We set errnum to 255 to activate the SM64 pause
+    pad->errnum = 255;
+
+    // IMPORTANT: At levels, the KOS thread may go to sleep.
+    // This function forces the hardware to process the reconnection.
+    maple_wait_scan(); 
 }
 
 struct ControllerAPI controller_dc = { controller_dc_init, controller_dc_read };
