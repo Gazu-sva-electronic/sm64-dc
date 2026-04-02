@@ -693,7 +693,18 @@ void initiate_painting_warp(void) {
  * Return the time left until the delayed warp is initiated.
  */
 s16 level_trigger_warp(struct MarioState *m, s32 warpOp) {
-    s32 val04 = TRUE;
+  // --- DEFINITIVE LOGIC FOR DREAMCAST ---
+// If the game tries to kill us (Op 18) in Bowser 3 (Level 34)...
+  if (gCurrLevelNum == LEVEL_BOWSER_3 && warpOp == WARP_OP_DEATH) {
+    // ...we check if Mario still has health (more than 255 units).
+// If he has health, it's a flight limit error -> Go to the Credits.
+// If he has 0 or very little health, Bowser defeated him -> He dies normally.
+    if (m->health > 0x100) { 
+            warpOp = WARP_OP_CREDITS_START; 
+        }
+    }
+    // -----------------------------------------
+     s32 val04 = TRUE;
 
     if (sDelayedWarpOp == WARP_OP_NONE) {
         m->invincTimer = -1;
