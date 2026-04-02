@@ -106,6 +106,7 @@ void bhv_flamethrower_loop(void);
 void bhv_flamethrower_flame_loop(void);
 void bhv_bouncing_fireball_loop(void);
 void bhv_bouncing_fireball_flame_loop(void);
+void bhv_bowser_shock_wave_init(void); // Fix statement: Bowser shockwave height and duration adjustment
 void bhv_bowser_shock_wave_loop(void);
 void bhv_flame_mario_loop(void);
 void bhv_black_smoke_mario_loop(void);
