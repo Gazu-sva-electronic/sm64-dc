@@ -87,10 +87,10 @@ const LevelScript level_main_menu_entry_2[] = {
     /*33*/ CALL_LOOP(/*arg*/ 0, /*func*/ lvl_update_obj_and_load_act_button_actions),
     /*35*/ GET_OR_SET(/*op*/ OP_SET, /*var*/ VAR_CURR_ACT_NUM),
     /*36*/ STOP_MUSIC(/*fadeOutTime*/ 0x00BE),
-    /*37*/ TRANSITION(/*transType*/ WARP_TRANSITION_FADE_INTO_COLOR, /*time*/ 16, /*color*/ 0xFF, 0xFF, 0xFF),
-    /*39*/ SLEEP(/*frames*/ 16),
+    /*37*/ TRANSITION(/*transType*/ WARP_TRANSITION_FADE_INTO_COLOR, /*time*/ 30, /*color*/ 0xFF, 0xFF, 0xFF),
+    /*39*/ SLEEP(/*frames*/ 30),
     /*40*/ CLEAR_LEVEL(),
-    /*41*/ SLEEP_BEFORE_EXIT(/*frames*/ 1),
+    /*41*/ SLEEP_BEFORE_EXIT(/*frames*/ 9),
     // L1:
     /*42*/ EXIT(),
 };
