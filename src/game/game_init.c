@@ -180,6 +180,24 @@ void clear_z_buffer(void) {
 
 /** Sets up the final framebuffer image. */
 void display_frame_buffer(void) {
+  // We declare only what is necessary so as not to confuse the compiler
+    extern u8 gControllerBits;
+    extern OSContPad gControllerPads[];
+    
+    // We define the driver structure locally
+    struct DC_API_Final {
+        void (*init)(void);
+        void (*read)(OSContPad *pad);
+    };
+    extern struct DC_API_Final controller_dc;
+
+    // THE EXORCISM: If there is no command, we force reading
+    // This runs on every frame, even at levels.
+    if (gControllerBits == 0) {
+        if (controller_dc.read != NULL) {
+            controller_dc.read(&gControllerPads[0]);
+        }
+    }
     ;
 }
 
